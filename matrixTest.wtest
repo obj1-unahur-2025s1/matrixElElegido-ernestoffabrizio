@@ -1,9 +1,11 @@
-
+import matrix.*
 
 describe "group of tests " {
 
   test "test 01" {
-    assert.equals(100, 50+50)
+    nave.subirPasajero(neo)
+    nave.subirPasajero(morfeo)
+    assert.that(nave.estaEquilibrada())
   }
 
 }
