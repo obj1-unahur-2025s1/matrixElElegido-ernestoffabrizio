@@ -27,7 +27,7 @@ object morfeo{
         if (not(self.estaDescansado())){
             descanso = true
         }
-        vitalidadTotal = vitalidadTotal-1
+        vitalidadTotal = (vitalidadTotal-1).max(0)
     }
     method vitalidad(){
         return(vitalidadTotal)
@@ -46,49 +46,28 @@ object trinity{
     }
 }
 object nave{
-    const listaPasajeros = []
-    method subirPasajero(unPasajero){
-        listaPasajeros.add(unPasajero)
-    }    
-    method pasajeros(){
-        return(listaPasajeros)
-    }
-    method bajarPasajero(unPasajero){
-        listaPasajeros.remove(unPasajero)
-    }
-    method pasajeroDeMayorVitalidad(){
-        var mayorVitalidad = listaPasajeros.first()
-            listaPasajeros.forEach{ pasajero =>
-    if (pasajero.vitalidad() > mayorVitalidad.vitalidad()) {
-      mayorVitalidad = pasajero 
-      }
-  }
-        return (mayorVitalidad)
-    }
+    const pasajeros = #{neo, morfeo, trinity}
+    
+    method cantidadDePasajeros() = pasajeros.size()
+
+    method pasajeroDeMayorVitalidad() = pasajeros.max{pasajero => pasajero.vitalidad()}
+        
+    method pasajeroDeMenorVitalidad() = pasajeros.min{pasajero => pasajero.vitalidad()}   
+    
     method estaEquilibrada(){
-        var pasajeroConMasVitalidad = self.pasajeroDeMayorVitalidad()
-        var estaEquilibrado = true
-            listaPasajeros.forEach{ pasajero =>
-        if (pasajeroConMasVitalidad.vitalidad() > pasajero.vitalidad()*2) {
-            estaEquilibrado = false
-        }
-        pasajeroConMasVitalidad = pasajero
-        }
-        return(estaEquilibrado)
+        return
+            self.pasajeroDeMayorVitalidad().vitalidad() < self.pasajeroDeMenorVitalidad().vitalidad() * 2
     }
-    method estaElElegido(){
-        return listaPasajeros.any{
-        pasajero => pasajero.esElegido()
-        }
+    
+    method estaElELegido() = pasajeros.any{pasajero => pasajero.esElElegido()}
+
+    method chocar(){ 
+        pasajeros.forEach{pasajero => pasajero.saltar()}
+        pasajeros.clear()
     }
-    method naveChoca(){
-        listaPasajeros.removeAll()
+
+    method acelerar() {
+        pasajeros.filter{pasajero => not pasajero.esElElegido()}.forEach{pasajero => pasajero.saltar()}
+        pasajeros.remove{neo}
     }
-    method naveAcelera(){
-        listaPasajeros.forEach { pasajero => 
-          if(not pasajero.esElElegido()){
-            pasajero.saltar()
-        }
-    }
-  }
 }
